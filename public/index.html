@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Here to Slay Online - Việt Hóa</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Màn hình sảnh chờ -->
+  <div id="lobby-screen" class="screen">
+    <div class="lobby-box">
+      <h1>HERE TO SLAY ONLINE</h1>
+      <p>Phiên bản Việt hóa chuẩn 100% luật gốc & Bộ mở rộng</p>
+      <input type="text" id="player-name" placeholder="Nhập tên nhân vật của bạn..." maxlength="15">
+      <div class="lobby-actions">
+        <button id="btn-create" class="btn-primary">Tạo Phòng Mới</button>
+        <div class="join-group">
+          <input type="text" id="room-code-input" placeholder="Nhập mã phòng...">
+          <button id="btn-join" class="btn-secondary">Vào Phòng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Màn hình bàn chơi -->
+  <div id="game-screen" class="screen hidden">
+    <!-- Thanh điều khiển trên cùng -->
+    <header class="top-bar">
+      <div class="room-info">
+        Phòng: <strong id="display-room-code">-----</strong>
+      </div>
+      <div class="deck-controls">
+        <button id="btn-shuffle" class="btn-tool">🔀 Xào Bài</button>
+        <button id="btn-deal" class="btn-tool">🃏 Chia Bài (5 lá)</button>
+        <button id="btn-recall" class="btn-tool danger">♻️ Thu Bài</button>
+        <button id="btn-leader-modal" class="btn-tool">👑 Chọn Thủ Lĩnh</button>
+      </div>
+      <div class="dice-box">
+        <span id="dice-result">🎲 1 + 1 = 2</span>
+        <button id="btn-roll" class="btn-dice">Tung Xúc Xắc</button>
+      </div>
+    </header>
+
+    <!-- Khu vực đối thủ -->
+    <section id="opponents-area" class="opponents-grid"></section>
+
+    <!-- Khu vực trung tâm bàn đấu -->
+    <section class="center-board">
+      <div class="monsters-zone">
+        <h3>QUÁI VẬT ĐANG MỞ (Giết 3 để thắng)</h3>
+        <div id="active-monsters" class="card-row"></div>
+      </div>
+      <div class="decks-zone">
+        <div id="main-deck-pile" class="deck-pile" title="Bấm để rút 1 lá">
+          <span>BỘ BÀI CHÍNH</span>
+          <strong id="deck-count">0</strong>
+          <small>(Bấm để rút)</small>
+        </div>
+        <div id="discard-pile" class="deck-pile discard">
+          <span>CHỒNG BÀI BỎ</span>
+          <strong id="discard-count">0</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- Khu vực của bản thân -->
+    <section class="my-area">
+      <div class="my-stats">
+        <div class="ap-control">
+          Điểm Hành Động: <strong id="my-ap">3</strong>/3
+          <button onclick="changeAP(-1)">-</button>
+          <button onclick="changeAP(1)">+</button>
+          <button onclick="resetAP()">Hồi 3 AP</button>
+        </div>
+        <div id="win-status" class="win-badge">Tổ đội: 0/6 chủng tộc | Quái vật: 0/3</div>
+      </div>
+
+      <div class="my-board-row">
+        <div class="my-leader-slot" id="my-leader">Chưa chọn Thủ Lĩnh</div>
+        <div class="my-party-slot" id="my-party"></div>
+      </div>
+
+      <div class="my-hand-container">
+        <h4>BÀI TRÊN TAY (Bấm chuột trái để đánh xuống bàn, chuột phải để bỏ vào chồng bài bỏ)</h4>
+        <div id="my-hand" class="hand-row"></div>
+      </div>
+    </section>
+
+    <!-- Nhật ký ván đấu -->
+    <aside id="game-logs" class="log-panel"></aside>
+  </div>
+
+  <!-- Modal chọn Thủ Lĩnh -->
+  <div id="leader-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Chọn Nhân Vật Thủ Lĩnh Đại Diện</h2>
+      <div id="leader-choices" class="card-row"></div>
+      <button onclick="closeLeaderModal()">Đóng</button>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="cards_data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
