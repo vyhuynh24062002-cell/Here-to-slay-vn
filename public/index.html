@@ -3,70 +3,54 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Here to Slay Online - Việt Hóa Đầy Đủ</title>
+  <title>Here to Slay Online - Việt Hóa</title>
   <style>
-    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    * { box-sizing: border-box; font-family: sans-serif; }
     body { margin: 0; background: #161221; color: #f3f0fa; }
     .hidden { display: none !important; }
     .screen { min-height: 100vh; display: flex; flex-direction: column; }
-    #lobby-screen { justify-content: center; align-items: center; background: radial-gradient(circle, #2e2442, #110d1a); padding: 15px; }
-    .lobby-box { background: #241d35; padding: 28px; border-radius: 16px; text-align: center; box-shadow: 0 12px 32px rgba(0,0,0,0.6); border: 1px solid #4c3d6e; width: 100%; max-width: 360px; }
+    #lobby-screen { justify-content: center; align-items: center; background: #1a1429; padding: 15px; }
+    .lobby-box { background: #241d35; padding: 25px; border-radius: 16px; text-align: center; border: 1px solid #4c3d6e; width: 100%; max-width: 350px; }
     .lobby-box input { padding: 12px; width: 100%; border-radius: 8px; border: none; margin: 8px 0; font-size: 15px; }
-    .divider { margin: 14px 0 6px; font-size: 12px; color: #a799c7; }
-    .join-group { display: flex; gap: 6px; }
-    .btn-primary, .btn-secondary, .btn-tool, .btn-dice { padding: 10px 14px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
-    .btn-primary { background: #8b5cf6; color: white; width: 100%; font-size: 16px; }
-    .btn-secondary { background: #10b981; color: white; white-space: nowrap; }
-    .btn-tool { background: #372c50; color: #fff; margin: 2px; font-size: 13px; }
+    .join-group { display: flex; gap: 6px; margin-top: 10px; }
+    button { padding: 10px 14px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+    .btn-primary { background: #8b5cf6; color: #fff; width: 100%; font-size: 16px; }
+    .btn-secondary { background: #10b981; color: #fff; white-space: nowrap; }
+    .btn-tool { background: #372c50; color: #fff; margin: 2px; font-size: 12px; }
     .btn-tool.danger { background: #dc2626; }
     .btn-dice { background: #f59e0b; color: #111; }
-
-    .top-bar { display: flex; justify-content: space-between; align-items: center; background: #110d1b; padding: 8px 12px; border-bottom: 2px solid #372c52; flex-wrap: wrap; gap: 8px; }
-    .dice-box { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-    .dice-box select { padding: 8px; border-radius: 6px; background: #261f38; color: #fff; border: 1px solid #524278; }
-
-    .opponents-grid { display: flex; justify-content: center; gap: 10px; padding: 8px; background: #1e182e; flex-wrap: wrap; }
-    .opponent-card { background: #2b2340; padding: 8px 10px; border-radius: 10px; border: 1px solid #493b6b; font-size: 12px; min-width: 210px; }
-    .opp-heroes { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
-    .mini-tag { background: #433663; padding: 4px 7px; border-radius: 4px; cursor: pointer; }
-
-    .center-board { display: flex; justify-content: space-around; align-items: center; padding: 10px; background: #241d36; flex-wrap: wrap; gap: 12px; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; background: #110d1b; padding: 8px; border-bottom: 2px solid #372c52; flex-wrap: wrap; gap: 6px; }
+    .opponents-grid { display: flex; justify-content: center; gap: 8px; padding: 8px; background: #1e182e; flex-wrap: wrap; }
+    .opponent-card { background: #2b2340; padding: 8px; border-radius: 8px; border: 1px solid #493b6b; font-size: 12px; }
+    .mini-tag { background: #433663; padding: 3px 6px; border-radius: 4px; display: inline-block; margin: 2px; }
+    .center-board { display: flex; justify-content: space-around; align-items: center; padding: 10px; background: #241d36; flex-wrap: wrap; gap: 10px; }
     .card-row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
-
-    .deck-pile { width: 100px; height: 140px; border-radius: 10px; background: #362b52; border: 2px dashed #7c65b3; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; text-align: center; padding: 6px; }
-    .decks-zone { display: flex; gap: 10px; }
-
-    .ht-card { width: 144px; height: 202px; border-radius: 10px; position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.6); background: #fff; cursor: pointer; user-select: none; flex-shrink: 0; }
+    .deck-pile { width: 95px; height: 135px; border-radius: 10px; background: #362b52; border: 2px dashed #7c65b3; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 5px; }
+    .ht-card { width: 140px; height: 196px; border-radius: 10px; position: relative; overflow: hidden; background: #fff; flex-shrink: 0; }
     .ht-card-art { width: 100%; height: 100%; background-repeat: no-repeat; }
-    .ht-card-vi-overlay { position: absolute; bottom: 5px; left: 6px; right: 6px; height: 54px; background: #f5f2eb; color: #18181b; font-size: 9.5px; line-height: 1.18; padding: 3px 4px; border-radius: 4px; display: flex; align-items: center; justify-content: center; text-align: center; font-weight: 600; border: 1px solid rgba(0,0,0,0.18); }
-    .ht-card.monster .ht-card-vi-overlay { background: #eae8e3; height: 42px; font-size: 9px; }
-    .ht-card.cursed .ht-card-vi-overlay, .ht-card.item .ht-card-vi-overlay { background: #363042; color: #f8fafc; }
-    .equipped-badge { position: absolute; top: 24px; right: 4px; background: #f59e0b; color: #000; font-size: 9px; font-weight: bold; padding: 2px 5px; border-radius: 4px; z-index: 5; }
-
-    .my-area { padding: 10px 14px; background: #181324; border-top: 2px solid #3c2f59; flex: 1; }
-    .my-stats { display: flex; justify-content: space-between; margin-bottom: 8px; align-items: center; flex-wrap: wrap; gap: 8px; }
-    .win-badge { background: #10b981; color: #06281e; font-weight: bold; padding: 5px 12px; border-radius: 20px; font-size: 13px; }
-    .my-board-row { display: flex; gap: 12px; min-height: 220px; background: #211b33; padding: 8px; border-radius: 12px; overflow-x: auto; }
-    .slot-group { display: flex; flex-direction: column; gap: 6px; }
-    .flex-1 { flex: 1; }
+    .ht-card-vi-overlay { position: absolute; bottom: 5px; left: 5px; right: 5px; height: 52px; background: #f5f2eb; color: #111; font-size: 9px; line-height: 1.15; padding: 3px; border-radius: 4px; display: flex; align-items: center; justify-content: center; text-align: center; font-weight: bold; }
+    .ht-card.monster .ht-card-vi-overlay { background: #eae8e3; height: 40px; }
+    .ht-card.cursed .ht-card-vi-overlay, .ht-card.item .ht-card-vi-overlay { background: #363042; color: #fff; }
+    .equipped-badge { position: absolute; top: 22px; right: 4px; background: #f59e0b; color: #000; font-size: 9px; font-weight: bold; padding: 2px 4px; border-radius: 4px; }
+    .my-area { padding: 10px; background: #181324; flex: 1; }
+    .my-stats { display: flex; justify-content: space-between; margin-bottom: 8px; align-items: center; flex-wrap: wrap; gap: 6px; }
+    .win-badge { background: #10b981; color: #06281e; font-weight: bold; padding: 4px 10px; border-radius: 20px; font-size: 12px; }
+    .my-board-row { display: flex; gap: 10px; min-height: 210px; background: #211b33; padding: 8px; border-radius: 10px; overflow-x: auto; }
     .hand-row { display: flex; gap: 8px; overflow-x: auto; padding: 8px 0; }
-
-    .log-panel { background: #0e0b16; border-top: 1px solid #4c3d6e; padding: 8px 12px; font-size: 12px; max-height: 110px; overflow-y: auto; }
+    .log-panel { background: #0e0b16; padding: 8px; font-size: 11px; max-height: 90px; overflow-y: auto; }
     .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 100; padding: 10px; }
-    .modal-content { background: #261f36; padding: 18px; border-radius: 12px; max-width: 95vw; max-height: 88vh; overflow-y: auto; text-align: center; }
-    #zoom-card-container .ht-card { transform: scale(1.65); cursor: default; }
+    .modal-content { background: #261f36; padding: 15px; border-radius: 12px; max-width: 95vw; max-height: 85vh; overflow-y: auto; text-align: center; }
+    #zoom-card-container .ht-card { transform: scale(1.6); }
   </style>
 </head>
 <body>
   <div id="lobby-screen" class="screen">
     <div class="lobby-box">
-      <h1>HERE TO SLAY ONLINE</h1>
-      <p>Full Bộ Cơ Bản + Mở Rộng • Việt Hóa 100%</p>
+      <h2>HERE TO SLAY ONLINE</h2>
       <input type="text" id="player-name" placeholder="Nhập tên của bạn..." maxlength="15">
       <button id="btn-create" class="btn-primary">Tạo Phòng Chơi Mới</button>
-      <div class="divider">HOẶC VÀO PHÒNG BẠN BÈ</div>
       <div class="join-group">
-        <input type="text" id="room-code-input" placeholder="Nhập mã phòng...">
+        <input type="text" id="room-code-input" placeholder="Mã phòng...">
         <button id="btn-join" class="btn-secondary">Vào Phòng</button>
       </div>
     </div>
@@ -74,80 +58,63 @@
 
   <div id="game-screen" class="screen hidden">
     <header class="top-bar">
-      <div class="room-info">Phòng: <strong id="display-room-code">-----</strong></div>
-      <div class="deck-controls">
-        <button id="btn-shuffle" class="btn-tool">🔀 Xào Bài</button>
-        <button id="btn-deal" class="btn-tool">🃏 Chia Bài</button>
-        <button id="btn-recall" class="btn-tool danger">♻️ Thu Bài</button>
+      <div>Phòng: <strong id="display-room-code">-----</strong></div>
+      <div>
+        <button id="btn-shuffle" class="btn-tool">🔀 Xào</button>
+        <button id="btn-deal" class="btn-tool">🃏 Chia</button>
+        <button id="btn-recall" class="btn-tool danger">♻️ Thu</button>
         <button id="btn-leader-modal" class="btn-tool">👑 Thủ Lĩnh</button>
       </div>
-      <div class="dice-box">
+      <div>
         <select id="roll-action-type">
-          <option value="hero">Dùng Anh Hùng</option>
-          <option value="attack">Tấn Công Quái</option>
+          <option value="hero">Anh Hùng</option>
+          <option value="attack">Quái Vật</option>
           <option value="challenge">Thách Đấu</option>
         </select>
         <button id="btn-roll" class="btn-dice">🎲 Tung</button>
-        <strong id="dice-result">1 + 1 = 2</strong>
+        <strong id="dice-result">1+1=2</strong>
       </div>
     </header>
 
     <section id="opponents-area" class="opponents-grid"></section>
 
     <section class="center-board">
-      <div class="monsters-zone">
-        <small>QUÁI VẬT TRÊN BÀN (Chạm vào để xác nhận giết)</small>
+      <div>
+        <small>QUÁI VẬT TRÊN BÀN</small>
         <div id="active-monsters" class="card-row"></div>
       </div>
-      <div class="decks-zone">
+      <div style="display:flex;gap:8px">
         <div id="main-deck-pile" class="deck-pile">
-          <span>BỘ BÀI</span>
-          <strong id="deck-count">0</strong>
-          <small>(Chạm rút 1)</small>
+          <span>BỘ BÀI</span><strong id="deck-count">0</strong><small>(Rút 1)</small>
         </div>
-        <div id="discard-pile" class="deck-pile">
-          <span>BÀI BỎ</span>
-          <strong id="discard-count">0</strong>
+        <div class="deck-pile">
+          <span>BÀI BỎ</span><strong id="discard-count">0</strong>
         </div>
       </div>
     </section>
 
     <section class="my-area">
       <div class="my-stats">
-        <div>
-          AP: <strong id="my-ap">3</strong>/3
-          <button onclick="changeAP(-1)">-1</button>
-          <button onclick="changeAP(1)">+1</button>
-          <button onclick="resetAP()">Hồi 3 AP</button>
-        </div>
-        <div id="win-status" class="win-badge">Chủng tộc: 0/6 | Quái: 0/3</div>
+        <div>AP: <strong id="my-ap">3</strong>/3 <button onclick="changeAP(-1)">-1</button> <button onclick="changeAP(1)">+1</button> <button onclick="resetAP()">Hồi 3</button></div>
+        <div id="win-status" class="win-badge">Tộc: 0/6 | Quái: 0/3</div>
       </div>
-
       <div class="my-board-row">
-        <div class="slot-group">
-          <small>THỦ LĨNH & QUÁI ĐÃ GIẾT</small>
-          <div id="my-leader" class="card-row"></div>
-        </div>
-        <div class="slot-group flex-1">
-          <small>TỔ ĐỘI ANH HÙNG (Chạm vào để bỏ bài)</small>
-          <div id="my-party" class="card-row"></div>
-        </div>
+        <div><small>THỦ LĨNH & QUÁI</small><div id="my-leader" class="card-row"></div></div>
+        <div style="flex:1"><small>TỔ ĐỘI ANH HÙNG</small><div id="my-party" class="card-row"></div></div>
       </div>
-
-      <div class="my-hand-container">
-        <h4>BÀI TRÊN TAY (Chạm vào lá bài để chọn hành động hoặc phóng to)</h4>
+      <div>
+        <small>BÀI TRÊN TAY (Chạm lá bài để đánh/xem)</small>
         <div id="my-hand" class="hand-row"></div>
       </div>
     </section>
-
     <aside id="game-logs" class="log-panel"></aside>
   </div>
 
   <div id="leader-modal" class="modal hidden">
     <div class="modal-content">
-      <h3>Chọn Thủ Lĩnh Đại Diện</h3>
+      <h3>Chọn Thủ Lĩnh</h3>
       <div id="leader-choices" class="card-row"></div>
-      <button class="btn-secondary" style="margin-top:15px" onclick="closeLeaderModal()">Đóng</button>
+      <button class="btn-secondary" style="margin-top:12px" onclick="closeLeaderModal()">Đóng</button>
     </div>
   </div>
 
@@ -156,49 +123,57 @@
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
+  <script src="cards_data.js"></script>
   <script>
-    const LEADERS_DATA = [
-      { id: 'L1', name: 'The Divine Arrow', class: 'Ranger', sheet: '9.png', pos: '8% 6%', textVi: 'Mỗi khi tung xúc xắc TẤN CÔNG Quái Vật, +1 vào xúc xắc' },
-      { id: 'L2', name: 'The Shadow Claw', class: 'Thief', sheet: '9.png', pos: '50% 6%', textVi: 'Mỗi lượt 1 lần, dùng 1 AP lấy 1 lá từ tay người chơi khác' },
-      { id: 'L3', name: 'The Fist of Reason', class: 'Fighter', sheet: '9.png', pos: '92% 6%', textVi: 'Mỗi khi đổ xúc xắc THÁCH ĐẤU, +2 vào xúc xắc của bạn' },
-      { id: 'L4', name: 'The Charismatic Song', class: 'Bard', sheet: '9.png', pos: '8% 54%', textVi: 'Mỗi khi tung xúc xắc dùng hiệu ứng Anh Hùng, +1 vào xúc xắc' },
-      { id: 'L5', name: 'The Cloaked Sage', class: 'Wizard', sheet: '9.png', pos: '50% 54%', textVi: 'Mỗi khi bạn đánh lá bài Phép Thuật, RÚT 1 lá' },
-      { id: 'L6', name: 'The Protecting Horn', class: 'Guardian', sheet: '9.png', pos: '92% 54%', textVi: 'Mỗi khi dùng lá Chuyển Đổi cho lần đổ xúc xắc đó, +1 hoặc -1' },
-else if (act === '2') zoomCard(hero);
-};
-pBox.appendChild(el);
-});
-const hBox = document.getElementById('my-hand');
-hBox.innerHTML = '';
-me.hand.forEach((card, cIdx) => {
-const el = createCardElement(card);
-el.onclick = () => {
-const action = prompt(
-'Lá bài [' + card.name + ']:\n' +
-'1. Triệu hồi vào Tổ đội (Anh hùng)\n' +
-'2. Trang bị cho Anh hùng (Vật phẩm)\n' +
-'3. Đánh Phép thuật / Bỏ bài\n' +
-'4. Phóng to xem chi tiết'
-);
-if (action === '1') {
-socket.emit('playCard', { roomCode: room.code, cardIndex: cIdx, destination: 'party' });
-} else if (action === '2') {
-if (me.party.length === 0) return alert('Bạn cần có ít nhất 1 Anh hùng trên bàn để trang bị!');
-const names = me.party.map((h, i) => (i + 1) + '. ' + h.name).join('\n');
-const choice = parseInt(prompt('Chọn số thứ tự Anh hùng:\n' + names)) - 1;
-if (me.party[choice]) {
-socket.emit('playCard', { roomCode: room.code, cardIndex: cIdx, destination: 'equip', targetHeroIndex: choice });
-}
-} else if (action === '3') {
-socket.emit('playCard', { roomCode: room.code, cardIndex: cIdx, destination: 'discard' });
-} else if (action === '4') {
-zoomCard(card);
-}
-};
-hBox.appendChild(el);
-});
-}
-const logBox = document.getElementById('game-logs');
-logBox.innerHTML = room.logs.slice(-8).map(l => '• ' + l + '').join('');
-logBox.scrollTop = logBox.scrollHeight;
-}
+    const socket = io();
+    let currentRoom = null;
+
+    document.getElementById('btn-create').onclick = () => {
+      const name = document.getElementById('player-name').value.trim() || 'Chủ Phòng';
+      socket.emit('createRoom', { playerName: name, initialDeck: MAIN_DECK_DATA, monsterDeck: MONSTERS_DATA });
+    };
+
+    document.getElementById('btn-join').onclick = () => {
+      const name = document.getElementById('player-name').value.trim() || 'Khách';
+      const code = document.getElementById('room-code-input').value.trim();
+      if (!code) return alert('Nhập mã phòng!');
+      socket.emit('joinRoom', { roomCode: code, playerName: name });
+    };
+
+    document.getElementById('btn-shuffle').onclick = () => socket.emit('shuffleDeck', currentRoom.code);
+    document.getElementById('btn-deal').onclick = () => socket.emit('dealCards', currentRoom.code);
+    document.getElementById('btn-recall').onclick = () => {
+      if (confirm('Thu toàn bộ bài về bộ bài gốc?')) {
+        socket.emit('recallCards', { roomCode: currentRoom.code, fullDeck: MAIN_DECK_DATA, fullMonsters: MONSTERS_DATA });
+      }
+    };
+    document.getElementById('btn-roll').onclick = () => {
+      socket.emit('rollDice', { roomCode: currentRoom.code, actionType: document.getElementById('roll-action-type').value });
+    };
+    document.getElementById('main-deck-pile').onclick = () => socket.emit('drawCard', currentRoom.code);
+
+    document.getElementById('btn-leader-modal').onclick = () => {
+      const box = document.getElementById('leader-choices');
+      box.innerHTML = '';
+      LEADERS_DATA.forEach(leader => {
+        const el = createCardElement(leader);
+        el.onclick = () => { socket.emit('selectLeader', { roomCode: currentRoom.code, leaderCard: leader }); closeLeaderModal(); };
+        box.appendChild(el);
+      });
+      document.getElementById('leader-modal').classList.remove('hidden');
+    };
+
+    function closeLeaderModal() { document.getElementById('leader-modal').classList.add('hidden'); }
+    function changeAP(delta) { socket.emit('changeAP', { roomCode: currentRoom.code, delta }); }
+    function resetAP() {
+      const me = currentRoom.players.find(p => p.id === socket.id);
+      if (me) socket.emit('changeAP', { roomCode: currentRoom.code, delta: 3 - me.ap });
+    }
+    function zoomCard(card) {
+      const c = document.getElementById('zoom-card-container');
+      c.innerHTML = '';
+      c.appendChild(createCardElement(card));
+      document.getElementById('zoom-modal').classList.remove('hidden');
+    }
+
+
