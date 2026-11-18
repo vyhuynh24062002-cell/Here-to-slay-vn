@@ -70,7 +70,7 @@ io.on('connection', (socket) => {
       discardPile: [],
       monsterDeck: mDeck,
       activeMonsters: mDeck.splice(0, 3),
-      dice:,
+      dice: new Array(1, 1),
       lastRollInfo: '',
       logs: ['Phòng ' + roomCode + ' đã tạo thành công!']
     };
