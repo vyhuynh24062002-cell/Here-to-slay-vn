@@ -1,0 +1,3 @@
+self.addEventListener('install',e=>e.waitUntil(caches.open('hts-alpha-4').then(c=>c.addAll(['./','./index.html','./cards.js','./app.js','./manifest.json']))));self.addEventListener('fetch',e=>{if(e.request.method==='GET' && !new URL(e.request.url).pathname.startsWith('/api/'))e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(r=>{if(r.ok&&new URL(e.request.url).origin===self.location.origin){let copy=r.clone();caches.open('hts-alpha-4').then(c=>c.put(e.request,copy))}return r})))})
+
+self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('hts-alpha-')&&k!=='hts-alpha-4').map(k=>caches.delete(k))))));
