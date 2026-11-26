@@ -1,0 +1,29 @@
+import cards from './cards.mjs';
+const C=Object.fromEntries(cards.map(c=>[c.id,c]));
+const random=n=>{let a=new Uint32Array(1),limit=2**32-(2**32%n);do{crypto.getRandomValues(a)}while(a[0]>=limit);return a[0]%n};
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){let j=random(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
+const ids=t=>cards.filter(c=>t.includes(c.type)).map(c=>c.id);
+const fail=m=>{throw Error(m)};
+const token=()=>crypto.randomUUID()+crypto.randomUUID();
+function draw(s,p,n){while(n--){if(!s.deck.length){s.deck=shuffle(s.discard);s.discard=[]}if(s.deck.length)p.hand.push(s.deck.pop())}}
+export function handle(s,b){let op=b.op;if(!s){if(op!=='create')fail('Phòng không tồn tại');s={phase:'lobby',players:[],rev:0,log:[],turn:0,ap:3,deck:[],discard:[],monsters:[],monDeck:[],dice:[],pending:null};}else if(op==='create')fail('Mã phòng đã tồn tại');
+let i=s.players.findIndex(p=>p.token===b.token),p=s.players[i];let out={};const log=m=>{s.log.push(m);s.log=s.log.slice(-40)};const turn=()=>{if(s.phase!=='play'||i!==s.turn||s.pending)fail('Chưa đến lượt hoặc đang xử lý hành động')};const spend=n=>{if(s.ap<n)fail('Không đủ điểm hành động');s.ap-=n};const roll=()=>{s.dice=[random(6)+1,random(6)+1];return s.dice[0]+s.dice[1]};
+if(op==='create'||op==='join'){if(s.phase!=='lobby'||s.players.length>=6)fail('Phòng đã đầy hoặc bắt đầu');let name=String(b.name||'Thợ săn').trim().slice(0,24);if(!name)fail('Nhập tên');p={name,token:token(),leader:null,hand:[],party:[],items:{},kills:[],ready:false};s.players.push(p);i=s.players.length-1;out.token=p.token;log(name+' vào phòng');}
+else {if(!p)fail('Phiên đăng nhập không hợp lệ');if(op==='state')return {s,out:{view:view(s,i)}};if(b.rev!==s.rev)fail('Trạng thái đã thay đổi, hãy thử lại');switch(op){
+case 'leader':if(s.phase!=='lobby'||C[b.id]?.type!=='leader'||s.players.some((x,j)=>j!==i&&x.leader===b.id))fail('Thủ lĩnh không hợp lệ');p.leader=b.id;p.ready=false;break;
+case 'ready':if(s.phase!=='lobby'||!p.leader)fail('Chọn thủ lĩnh trước');p.ready=!p.ready;break;
+case 'start':if(i!==0||s.phase!=='lobby'||s.players.length<2||!s.players.every(x=>x.ready&&x.leader))fail('Cần ít nhất 2 người sẵn sàng');s.deck=shuffle(ids(['hero','item','magic','challenge']));s.monDeck=shuffle(ids(['monster']));s.monsters=s.monDeck.splice(0,3);s.players.forEach(x=>draw(s,x,5));s.turn=random(s.players.length);s.phase='play';log('Bắt đầu trận');break;
+case 'draw':turn();spend(1);draw(s,p,1);log(p.name+' rút bài');break;
+case 'reset':turn();spend(3);s.discard.push(...p.hand);p.hand=[];draw(s,p,5);log(p.name+' đổi bài');break;
+case 'next':turn();s.turn=(s.turn+1)%s.players.length;s.ap=3;s.used=[];log('Lượt '+s.players[s.turn].name);break;
+case 'play':{turn();let id=b.id,c=C[id];if(!p.hand.includes(id)||!['hero','magic','item'].includes(c?.type))fail('Bài không hợp lệ');if(c.type==='item'){let j=b.targetPlayer,h=b.targetHero;let cursed=+id>=57&&+id<=63;if(!Number.isInteger(j)||!s.players[j]?.party.includes(h)||s.players[j].items[h]||(cursed?j===i:j!==i))fail('Mục tiêu trang bị không hợp lệ');}spend(1);p.hand.splice(p.hand.indexOf(id),1);s.pending={type:'challenge',id,actor:i,responders:s.players.map((_,j)=>j).filter(j=>j!==i),targetPlayer:b.targetPlayer,targetHero:b.targetHero};log(p.name+' đánh bài');break;}
+case 'pass':case 'challenge':{let q=s.pending;if(q?.type!=='challenge'||q.responders[0]!==i)fail('Không đến lượt phản ứng');if(op==='challenge'){if(!p.hand.includes(b.id)||C[b.id]?.type!=='challenge'||+b.id!==97)fail('Bản thử chỉ hỗ trợ thử thách cơ bản');p.hand.splice(p.hand.indexOf(b.id),1);s.discard.push(b.id);let a=roll(),z=roll();log('Thử thách: '+a+' – '+z);if(z>a){s.discard.push(q.id);s.pending=null;break}q.responders=[];}else q.responders.shift();if(!q.responders.length){let x=s.players[q.actor],c=C[q.id];s.pending=null;if(c.type==='hero'){x.party.push(q.id);s.used??=[];s.used.push(q.id);log('Triệu hồi: '+roll()+' điểm — đối chiếu kỹ năng thủ công');}else if(c.type==='item'){s.players[q.targetPlayer].items[q.targetHero]=q.id;}else{s.discard.push(q.id);log('Phép thuật: đối chiếu hiệu ứng thủ công');}}break;}
+case 'skill':turn();if(!p.party.includes(b.id)||(s.used||[]).includes(b.id))fail('Không thể kích hoạt');spend(1);s.used??=[];s.used.push(b.id);log(p.name+' kích hoạt kỹ năng: '+roll()+' điểm (đối chiếu thủ công)');break;
+case 'attack':turn();if(!s.monsters.includes(b.id)||!b.checked)fail('Xác nhận điều kiện đội hình trước');spend(2);s.pending={type:'attack',actor:i,id:b.id,total:roll()};log(p.name+' tấn công: '+s.pending.total);break;
+case 'resolve':{let q=s.pending;if(q?.type!=='attack'||q.actor!==i)fail('Không có tấn công');if(b.success===true){p.kills.push(q.id);s.monsters=s.monsters.filter(x=>x!==q.id);if(s.monDeck.length)s.monsters.push(s.monDeck.pop());if(p.kills.length>=3){s.phase='done';s.winner=i;}log('Đã nhận chiến tích (xác nhận thủ công)');}else log('Tấn công thất bại — tự xử lý hình phạt');s.pending=null;break;}
+case 'effectDraw':turn();draw(s,p,1);log(p.name+' rút theo hiệu ứng thủ công');break;
+case 'effectDiscard':turn();if(!p.hand.includes(b.id))fail('Không có lá này');p.hand.splice(p.hand.indexOf(b.id),1);s.discard.push(b.id);log(p.name+' bỏ bài theo hiệu ứng');break;
+case 'claim':turn();if(b.checked!==true)fail('Xác nhận điều kiện');s.phase='done';s.winner=i;log('Chiến thắng đội hình (xác nhận thủ công)');break;
+default:fail('Hành động không hợp lệ');}}
+s.rev++;return {s,out:{...out,view:view(s,i)}}}
+function view(s,i){return {phase:s.phase,rev:s.rev,me:i,players:s.players.map((p,j)=>({name:p.name,leader:p.leader,ready:p.ready,party:p.party,items:p.items,kills:p.kills,count:p.hand.length,...(i===j?{hand:p.hand}:{})})),turn:s.turn,ap:s.ap,deckCount:s.deck.length,discard:s.discard,monsters:s.monsters,dice:s.dice,log:s.log,pending:s.pending,winner:s.winner,used:s.used||[]}}
